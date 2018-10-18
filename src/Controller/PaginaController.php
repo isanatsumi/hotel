@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 class PaginaController extends AbstractController
 {
     /**
-     * @Route("/pagina", name="pagina")
+     * @Route("/", name="index")
      */
     public function index()
     {
@@ -25,8 +25,35 @@ class PaginaController extends AbstractController
      */
     public function contato(Request $request){
         
-        
         return $this->render('pagina/contato.html.twig');
         
     }
+    
+    /**
+     * @Route("/reservar", name="reservar")
+     */
+    public function reservar(){
+        
+        return $this->render('pagina/reservar.html.twig');
+        
+    }
+    
+    /**
+     * @Route("/login", name="login")
+     */
+    public function login(){
+        
+        return $this->render('pagina/login.html.twig');
+        
+    }
+    
+    /**
+     * @Route("/admin", name="admin")
+     */
+    public function admin(){
+        
+        return $this->render('pagina/admin.html.twig');
+        
+    }
+    
 }

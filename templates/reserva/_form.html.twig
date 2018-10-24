@@ -1,0 +1,34 @@
+{{ form_start(form) }}
+
+{# {{ form_widget(form) }} #}
+
+{{ form_row(form.dataEntrada) }}
+
+{{ form_row(form.dataSaida) }}
+
+<div class="form-group">
+    {{ form_label(form.valorTotal) }}
+    {{ form_widget(form.valorTotal) }}
+    {{ form_errors(form.valorTotal) }}
+</div>
+
+<div class="form-group">
+    {{ form_label(form.observacao) }}
+    {{ form_widget(form.observacao) }}
+    {{ form_errors(form.observacao) }}
+</div>
+
+<div class="form-group">
+    {{ form_label(form.quarto) }}
+    {{ form_widget(form.quarto) }}
+    {{ form_errors(form.quarto) }}
+</div>
+
+<div class="form-group">
+    {{ form_label(form.cliente) }}
+    {{ form_widget(form.cliente) }}
+    {{ form_errors(form.cliente) }}
+</div>
+
+    <button class="btn btn-outline-info">Salvar</button>
+{{ form_end(form) }}

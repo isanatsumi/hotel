@@ -1,0 +1,36 @@
+{{ form_start(form) }}
+
+    {# (form.nome)
+    {{ form_widget(form) }}
+    #}
+
+    {# imprime label, input e msg de erro se houver
+        {{ form_row(form.nome) }} #}
+
+<div class="form-group">
+    {{ form_label(form.nome) }}
+    {{ form_widget(form.nome) }}
+    {{ form_errors(form.nome) }}
+</div>
+
+<div class="form-group">
+    {{ form_label(form.diaria) }}
+    {{ form_widget(form.diaria) }}
+    {{ form_errors(form.diaria) }}
+</div>
+
+<div class="form-group">
+    {{ form_label(form.tipo) }}
+    {{ form_widget(form.tipo) }}
+    {{ form_errors(form.tipo) }}
+</div>
+
+<div class="form-group">
+    {{ form_label(form.descricao) }}
+    {{ form_widget(form.descricao) }}
+    {{ form_errors(form.descricao) }}
+</div>
+
+    <button class="btn btn-outline-info">Salvar</button>
+
+{{ form_end(form) }}

@@ -1,0 +1,12 @@
+{% extends 'base-admin.html.twig' %}
+
+{% block title %}Novo Quarto{% endblock %}
+
+{% block body %}
+    <h1>Adicionar novo Quarto</h1>
+
+    {# formulário #}
+    {{ include('quarto/_form.html.twig') }}
+
+    <a href="{{ path('quarto_index') }}">back to list</a>
+{% endblock %}

@@ -4,11 +4,11 @@
         <meta charset="UTF-8">
         <title>{% block title %}Welcome!{% endblock %}</title>
 
-        <script src="../js/jquery-3.3.1.min.js" type="text/javascript"></script>
-        <script src="../js/bootstrap.bundle.js" type="text/javascript"></script>
+        <script src="/js/jquery-3.3.1.min.js" type="text/javascript"></script>
+        <script src="/js/bootstrap.bundle.js" type="text/javascript"></script>
 
-        <link href="../css/bootstrap.css" rel="stylesheet" type="text/css"/>
-        <link href="../css/admin.css" rel="stylesheet" type="text/css"/>
+        <link href="/css/bootstrap.css" rel="stylesheet" type="text/css"/>
+        <link href="/css/admin.css" rel="stylesheet" type="text/css"/>
 
     {% block stylesheets %}{% endblock %}
     </head>
@@ -18,7 +18,7 @@
 
             <ul class="navbar-nav px-3">
                 <li class="nav-item text-nowrap">
-                    <a class="nav-link" href="#">Sign out</a>
+                    <a class="nav-link" href="{{ logout_path() }}" class="btn btn-light">{{ app.user.nome }} (Sign out)</a>
                 </li>
             </ul>
         </nav>
@@ -60,7 +60,7 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="">
+                                <a class="nav-link" href="{{ path('usuario_index') }}">
                                     <span data-feather="user"></span>
                                     Usuários
                                 </a>

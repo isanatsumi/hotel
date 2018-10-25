@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/extra")
+ * @Route("admin/extra")
  */
 class ExtraController extends AbstractController
 {

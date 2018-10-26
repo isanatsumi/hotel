@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <script src="../js/jquery-3.3.1.min.js" type="text/javascript"></script>
+        <link href="../css/bootstrap.css" rel="stylesheet" type="text/css"/>
+        <script src="../js/bootstrap.bundle.js" type="text/javascript"></script>
+
+    </head>
+    <body>
+    <div class="container">
+
+        <div>
+            {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                {{ 'layout.logged_in_as'|trans({'%username%': app.user.username}, 'FOSUserBundle') }} |
+                <a href="{{ path('fos_user_security_logout') }}" class="btn btn-dark">
+                    {{ 'Logout'|trans({}, 'FOSUserBundle') }}
+                </a>
+            {% else %}
+                <a href="{{ path('fos_user_security_login') }}" class="btn btn-dark">{{ 'Login'|trans({}, 'FOSUserBundle') }}</a>
+            {% endif %}
+        </div>
+
+        {% if app.request.hasPreviousSession %}
+            {% for type, messages in app.session.flashbag.all() %}
+                {% for message in messages %}
+                    <div class="flash-{{ type }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endfor %}
+        {% endif %}
+
+        <div>
+            {% block fos_user_content %}
+            {% endblock fos_user_content %}
+        </div>
+    </div>
+    </body>
+</html>

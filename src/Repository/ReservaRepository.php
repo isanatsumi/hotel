@@ -77,12 +77,11 @@ class ReservaRepository extends ServiceEntityRepository
 
         $query = $this->createQueryBuilder('r');
         $quartos = $query->where("r.dataEntrada >= :dataIni")
-                        ->setParameter("dataIni", $dataIni)
-                        ->andWhere("r.dataEntrada <= :dataFim")
-                        ->setParameter("dataFim", $dataFim)
-                        ->getQuery()
-                        ->execute()
-                        ;
+                         ->setParameter("dataIni", $dataIni)
+                         ->andWhere("r.dataEntrada <= :dataFim")
+                         ->setParameter("dataFim", $dataFim)
+                         ->getQuery()
+                         ->execute();
 
         return $quartos;
 

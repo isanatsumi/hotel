@@ -40,9 +40,8 @@ class Cliente
 
     /**
      * @ORM\Column(type="string", length=100)
-     *
      * @Assert\Email(
-     *     message = "O email '{{ value }}' não é válido.",
+     *     message = "O email '{{ value }}' não é valido.",
      *     checkMX = true
      * )
      */

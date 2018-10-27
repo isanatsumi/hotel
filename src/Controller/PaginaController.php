@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Quarto;
+use App\Entity\Cliente;
 use App\Entity\Reserva;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -35,18 +36,18 @@ class PaginaController extends AbstractController
         $dataFim = \DateTime::createFromFormat("d/m/Y", $dias[1]);
 
 
-
         $session = $request->getSession();
         $session->set("dataIni", $dataIni);
         $session->set("dataFim", $dataFim);
         $session->set("quantidade", $quantidade);
 
-        $em = $this->getDoctrine()->getRepository(Reserva::class);
-        $quartos = $em->quartosOcupados($dataIni, $dataFim, $quantidade);
+        //$em = $this->getDoctrine()->getRepository(Reserva::class);
+        //$quartos = $em->quartosOcupados($dataIni, $dataFim, $quantidade);
 
+        $em = $this->getDoctrine()->getRepository(Quarto::class);
+        $quartos = $em->findAll();
 
-
-        return $this->render('pagina/index.html.twig', array("quartos" => $quartos));
+        return $this->render('pagina/pesquisa.html.twig', array("quartos" => $quartos));
 
     }
 
@@ -61,31 +62,114 @@ class PaginaController extends AbstractController
     }
     
     /**
-     * @Route("/reservar", name="reservar")
+     * @Route("/reservar/{quarto}", name="reservar")
      */
     public function reservar($quarto, Request $request){
 
         $dataIni = $request->getSession()->get("dataIni");
         $dataFim = $request->getSession()->get("dataFim");
 
-        $totalDias = $dataIni->diff($dataFim)
-        $quarto = $this->getDoctrine()->getRepository(Quarto::class)->find($quarto);
+        $totalDias = $dataIni->diff($dataFim);
 
-        $totalReserva = $totalDias * $quarto->getDiaria();
+        $quarto = $this->getDoctrine()->getRepository(Quarto::class)->find($quarto);
+        $totalReserva = $totalDias->days * $quarto->getDiaria();
 
         return $this->render('pagina/reservar.html.twig', array(
             "quarto" => $quarto,
-            "total_dias" => $totalDias,
+            "total_dias" => $totalDias->days,
             "dataIni" => $dataIni,
             "dataFim" => $dataFim,
-            "total_reserva" => $totalReserva
-
-
+            "totalReserva" => $totalReserva
 
         ));
         
     }
-    
+
+    /**
+     * @Route("/confirmar", name="confirmar_reserva")
+     */
+    public function confirmar(Request $request, \Swift_Mailer $mailer){
+
+        $nome = $request->get("firstName");
+        $sobrenome = $request->get("lastName");
+        $email = $request->get("email");
+        $endereco = $request->get("address");
+        $quarto = $request->get("quarto");
+
+        $dataIni = $request->getSession()->get("dataIni");
+        $dataFim = $request->getSession()->get("dataFim");
+
+        $erro = false;
+
+        if (strlen($nome) < 2)
+        {
+            $this->addFlash("erro",  "O campo nome é obrigatório");
+            $erro = true;
+        }
+
+        if (strlen($sobrenome) < 2)
+        {
+            $this->addFlash("erro",  "O campo sobrenome é obrigatório");
+            $erro = true;
+        }
+
+        if (strlen($email) < 2)
+        {
+            $this->addFlash("erro",  "O campo email é obrigatório");
+            $erro = true;
+        }
+
+        if ($erro == true)
+        {
+            return $this->redirectToRoute("reservar", array("quarto" => $quarto));
+        }
+
+        $totalDias = $dataIni->diff($dataFim);
+        $quarto = $this->getDoctrine()->getRepository(Quarto::class)->find($quarto);
+        $totalReserva = $totalDias->days * $quarto->getDiaria();
+
+        $cliente = new Cliente();
+        $cliente->setEmail($email);
+        $cliente->setEndereco($endereco);
+        $cliente->setSobrenome($sobrenome);
+        $cliente->setNome($nome);
+
+        $reserva = new Reserva();
+        $reserva->setDataEntrada($dataIni);
+        $reserva->setDataSaida($dataFim);
+        $reserva->setValorTotal($totalReserva);
+        $reserva->setQuarto($quarto);
+        $reserva->setCliente($cliente);
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($cliente);
+        $em->persist($reserva);
+        $em->flush();
+
+        $this->enviarEmail($reserva, $mailer);
+
+        return $this->render("pagina/confirmar.html.twig", array("reserva" => $reserva));
+
+    }
+
+    /**
+     * Envia email com a confirmação da reserva
+     * @param Reserva $reserva
+     */
+    private function enviarEmail(Reserva $reserva, \Swift_Mailer $mailer){
+
+        $html = $this->renderView("pagina/confirmar.html.twig", array("reserva", $reserva));
+
+        $msg = new \Swift_Message();
+        $msg->addTo($reserva->getCliente()->getEmail());
+        $msg->setSubject("Confirmação da reserva");
+        $msg->addFrom("hoohootel@hotel.com", "Hoohotel");
+        $msg->setBody($html, 'text/html');
+
+        $mailer->send($msg);
+
+    }
+
     /**
      * @Route("/login2")
      */
